@@ -1,0 +1,293 @@
+// app/page.tsx (Next.js 13+)
+// or pages/index.tsx in older Next.js
+
+"use client";
+
+import { useEffect, useState } from "react";
+
+const WEDDING_DATE = new Date("2027-08-28T15:00:00"); // adjust time as needed
+
+function useCountdown(targetDate: Date) {
+  const [timeLeft, setTimeLeft] = useState<{days: number; hours: number; minutes: number; seconds: number}>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate.getTime() - now;
+
+      if (distance <= 0) {
+        clearInterval(interval);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      setTimeLeft({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((distance / (1000 * 60)) % 60),
+        seconds: Math.floor((distance / 1000) % 60),
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [targetDate]);
+
+  return timeLeft;
+}
+
+export default function Home() {
+  const countdown = useCountdown(WEDDING_DATE);
+
+  const handleRSVPClick = () => {
+    window.open("https://docs.google.com/forms/d/your-form-id-here", "_blank");
+  };
+
+  return (
+    <main className="min-h-screen bg-[#F9F4EE] text-[#1A1A1A]">
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/images/santorini-hero.jpg')", // replace with your image
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60" />
+        <div className="relative z-10 flex flex-col items-center justify-center px-6 py-32 text-center text-white">
+          <p className="tracking-[0.3em] text-xs md:text-sm uppercase">
+            Santorini, Greece
+          </p>
+          <h1 className="mt-4 text-4xl md:text-6xl font-serif">
+            Nick Pedersen &amp; <span className="italic">Matilda Relefors</span>
+          </h1>
+          <p className="mt-4 text-sm md:text-base">
+            August 28, 2027
+          </p>
+
+          {/* Countdown */}
+          <div className="mt-10 flex gap-4 md:gap-6">
+            {["Days", "Hours", "Minutes", "Seconds"].map((label, idx) => {
+              const value =
+                label === "Days"
+                  ? countdown.days
+                  : label === "Hours"
+                  ? countdown.hours
+                  : label === "Minutes"
+                  ? countdown.minutes
+                  : countdown.seconds;
+              return (
+                <div
+                  key={label}
+                  className="flex flex-col items-center rounded-full border border-white/40 bg-black/20 px-4 py-3 backdrop-blur-sm"
+                >
+                  <span className="text-xl md:text-2xl font-semibold">
+                    {value.toString().padStart(2, "0")}
+                  </span>
+                  <span className="mt-1 text-[0.65rem] md:text-xs tracking-[0.2em] uppercase">
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={handleRSVPClick}
+            className="mt-10 rounded-full bg-[#F5E7D8] px-8 py-3 text-xs md:text-sm font-medium tracking-[0.2em] uppercase text-[#1F4A3A] shadow-sm transition hover:bg-white"
+          >
+            RSVP
+          </button>
+        </div>
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F9F4EE] to-transparent" />
+      </section>
+
+      {/* OUR STORY */}
+      <section className="mx-auto max-w-5xl px-6 py-20 md:py-24">
+        <div className="grid gap-10 md:grid-cols-[1.2fr,1fr] items-start">
+          <div>
+            <p className="text-xs tracking-[0.3em] uppercase text-[#1F4A3A]">
+              Our Story
+            </p>
+            <h2 className="mt-3 text-3xl md:text-4xl font-serif">
+              A journey from {`{your city here}`} to Santorini
+            </h2>
+            <p className="mt-6 text-sm md:text-base leading-relaxed text-neutral-700">
+              {/* Replace this with their real story */}
+              Nick and Matilda&apos;s paths crossed in a way that felt both
+              impossible and inevitable. From the first conversation, there was
+              a sense of ease—like they had known each other for years. What
+              began as shared laughter and late-night talks slowly became a
+              life built together, one small decision at a time.
+            </p>
+            <p className="mt-4 text-sm md:text-base leading-relaxed text-neutral-700">
+              Santorini became their dream destination—a place where the sea,
+              light, and sky feel almost unreal. It&apos;s where they chose to
+              promise each other forever, surrounded by the people they love
+              most.
+            </p>
+          </div>
+          <div className="relative h-72 md:h-80 overflow-hidden rounded-3xl border border-[#F5E7D8] bg-[#F5E7D8]/40">
+            {/* Replace with a real photo */}
+            <img
+              src="/images/nick-matilda-story.jpg"
+              alt="Nick and Matilda"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* THE WEDDING DAY */}
+      <section className="border-y border-[#E3D6C7] bg-[#F5E7D8]/40">
+        <div className="mx-auto max-w-5xl px-6 py-16 md:py-20">
+          <p className="text-xs tracking-[0.3em] uppercase text-[#1F4A3A]">
+            The Wedding Day
+          </p>
+          <h2 className="mt-3 text-3xl md:text-4xl font-serif">
+            August 28, 2027
+          </h2>
+          <div className="mt-8 grid gap-8 md:grid-cols-3 text-sm md:text-base">
+            <div>
+              <h3 className="font-semibold text-[#1F4A3A]">Ceremony</h3>
+              <p className="mt-2 text-neutral-700">
+                4:00 PM · Cliffside terrace overlooking the caldera.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-[#1F4A3A]">Cocktail Hour</h3>
+              <p className="mt-2 text-neutral-700">
+                5:30 PM · Golden hour drinks and canapés.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-[#1F4A3A]">Reception</h3>
+              <p className="mt-2 text-neutral-700">
+                7:00 PM · Dinner, dancing, and celebrating under the stars.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* VENUE & MAP */}
+      <section className="mx-auto max-w-5xl px-6 py-20 md:py-24">
+        <div className="grid gap-10 md:grid-cols-[1.1fr,1.2fr] items-start">
+          <div>
+            <p className="text-xs tracking-[0.3em] uppercase text-[#1F4A3A]">
+              Venue
+            </p>
+            <h2 className="mt-3 text-3xl md:text-4xl font-serif">
+              {`{Venue Name}, Santorini`}
+            </h2>
+            <p className="mt-4 text-sm md:text-base text-neutral-700">
+              {/* Replace with real venue details */}
+              Perched above the Aegean Sea, our venue offers sweeping views of
+              the caldera, whitewashed rooftops, and the kind of sunsets you
+              never forget.
+            </p>
+            <button
+              onClick={() =>
+                window.open(
+                  "https://www.google.com/maps/dir/?api=1&destination=Santorini+Wedding+Venue",
+                  "_blank"
+                )
+              }
+              className="mt-6 inline-flex items-center rounded-full border border-[#1F4A3A] px-6 py-2 text-xs md:text-sm tracking-[0.2em] uppercase text-[#1F4A3A] transition hover:bg-[#1F4A3A] hover:text-[#F5E7D8]"
+            >
+              Get Directions
+            </button>
+          </div>
+          <div className="overflow-hidden rounded-3xl border border-[#E3D6C7] bg-white shadow-sm">
+            {/* Google Maps embed – replace q= with exact venue */}
+            <iframe
+              title="Wedding Venue Map"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019...your-embed-code-here"
+              width="100%"
+              height="320"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      {/* GALLERY */}
+      <section className="border-y border-[#E3D6C7] bg-[#F5E7D8]/30">
+        <div className="mx-auto max-w-5xl px-6 py-20 md:py-24">
+          <p className="text-xs tracking-[0.3em] uppercase text-[#1F4A3A]">
+            Gallery
+          </p>
+          <h2 className="mt-3 text-3xl md:text-4xl font-serif">
+            Moments in Santorini
+          </h2>
+          <p className="mt-4 text-sm md:text-base text-neutral-700">
+            Replace these placeholders with your favorite photos from your
+            computer.
+          </p>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {/* Just replace src paths with your own images */}
+            {[
+              "/images/gallery-1.jpg",
+              "/images/gallery-2.jpg",
+              "/images/gallery-3.jpg",
+              "/images/gallery-4.jpg",
+              "/images/gallery-5.jpg",
+              "/images/gallery-6.jpg",
+            ].map((src) => (
+              <div
+                key={src}
+                className="aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-200"
+              >
+                <img
+                  src={src}
+                  alt="Nick and Matilda in Santorini"
+                  className="h-full w-full object-cover transition duration-700 hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* RSVP SECTION */}
+      <section className="mx-auto max-w-5xl px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-xl text-center">
+          <p className="text-xs tracking-[0.3em] uppercase text-[#1F4A3A]">
+            RSVP
+          </p>
+          <h2 className="mt-3 text-3xl md:text-4xl font-serif">
+            We can&apos;t wait to celebrate with you
+          </h2>
+          <p className="mt-4 text-sm md:text-base text-neutral-700">
+            Please let us know if you&apos;ll be joining us in Santorini by
+            filling out the RSVP form.
+          </p>
+          <button
+            onClick={handleRSVPClick}
+            className="mt-8 rounded-full bg-[#1F4A3A] px-10 py-3 text-xs md:text-sm font-medium tracking-[0.2em] uppercase text-[#F5E7D8] shadow-sm transition hover:bg-[#163529]"
+          >
+            Open RSVP Form
+          </button>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="border-t border-[#E3D6C7] bg-[#F5E7D8]/60">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-6 text-xs text-neutral-700 md:flex-row">
+          <span>
+            Nick &amp; Matilda · August 28, 2027 · Santorini, Greece
+          </span>
+          <span className="text-[0.7rem] uppercase tracking-[0.2em]">
+            Made with love
+          </span>
+        </div>
+      </footer>
+    </main>
+  );
+}
